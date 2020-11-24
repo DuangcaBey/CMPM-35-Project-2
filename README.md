@@ -2,4 +2,4 @@
 
 by Noah Jiang (nujiang@ucsc.edu)
    Lily Li (lli135@ucsc.edu)
-   Bianac Hsieh (chsieh17@ucsc.edu)
+   Bianca Hsieh (chsieh17@ucsc.edu)
