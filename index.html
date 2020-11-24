@@ -1,0 +1,184 @@
+<html>
+<head>
+	
+	<script src="https://d3js.org/d3.v6.min.js"></script>
+		
+</head>
+	
+<body>
+	<script>
+	
+	
+let myData = d3.csv("Meals.csv").then(function(myData) {
+  console.log(myData);
+  init(myData);
+});
+
+
+function init(elements){
+	let canvasW = 1200;
+    let canvasH = 600;
+
+    let margin = 50;
+    let w = canvasW - (margin * 2);
+    let h = canvasH - (margin * 2);
+    let xinc = w / 10;
+    let yinc = h / 10;
+	
+	console.log(typeof myData)
+	
+	let data = [];
+	for (i = 0; i < myData.length; i++){
+		data.push(myData[i]);
+	}
+	
+	  
+	let x = d3.scaleBand()
+		.domain(data.map(d => d.Totals))
+		.range([margin, canvasW - margin])
+		.padding(0.1)
+		
+	let y = d3.scaleLinear()
+		//.domain([0, d3.max(myData, d => d.value)]).nice()
+		//.range([height - margin.bottom, margin.top])
+	
+
+	let xAxis = g => g
+		.attr("transform", `translate(0,${canvasH - margin})`)
+		.call(d3.axisBottom(x).tickSizeOuter(0))
+		
+	let yAxis = g => g
+		.attr("transform", `translate(${margin},0)`)
+		.call(d3.axisLeft(y))
+		.call(g => g.select(".domain").remove())
+		
+	let Meals = elements.filter(e => { return e.Type == "Meals"; });
+	let Snacks = elements.filter(e => { return e.Type == "Snacks"; });
+    let svg = d3.select("body").append("svg")
+      .attr("width", canvasW)
+      .attr("height", canvasH)
+      .style("background-color", d3.color("rgba(255,255,255,0.5)"))
+	  //.call(zoom);
+      ;
+	
+	let rects = svg.selectAll()
+    .data(Meals)
+    .enter() //when we are seeing new DOG data for the first time
+    .append("rect") //append a rect shape for each data point, and set various attributes based on the data
+    .attr("fill", d3.color("rgba(0,10,255,0.3)"))
+    .attr("x", 100)
+    .attr("y", d => { return d.id * 60 })
+    .attr("width", d => { return d.Times * 100; })
+    .attr("height", 58)
+	.on("mouseover", handleMouseOver_Blue)
+    .on("mouseout", handleMouseOut_Blue);
+	
+	let rects1 = svg.selectAll()
+    .data(Snacks)
+    .enter() //when we are seeing new DOG data for the first time
+    .append("rect") //append a rect shape for each data point, and set various attributes based on the data
+    .attr("fill", d3.color("rgba(255,10,0,0.3)"))
+    .attr("x", d => { return (d.Total - d.Times) * 100 + 105 })
+    .attr("y", d => { return d.id * 60 })
+    .attr("width", d => { return d.Times * 100; })
+    .attr("height", 58)
+	.on("mouseover", handleMouseOver_Red)
+    .on("mouseout", handleMouseOut_Red);
+	let text = svg.selectAll()
+    .data(Meals)
+    .enter();
+
+
+	text
+		.append("text")
+		.attr("text-anchor", "middle")
+		.attr("font-family", "sans-serif")
+		.attr("font-size", "16px")
+		.attr("fill", "black")
+		.attr("x", 75)
+		.attr("y", d => { return d.id * 60 + 40})
+		.text(d => { return d.Day });
+		
+	text
+		.append("text")
+		.attr("text-anchor", "middle")
+		.attr("font-family", "sans-serif")
+		.attr("font-size", "16px")
+		.attr("fill", "black")
+		.attr("x", d => { return d.Total * 100 + 85})
+		.attr("y", d => { return d.id * 60 + 40})
+		.text(d => { return d.Total });
+
+
+
+	const xText = svg.append("text")
+		.attr("x", canvasW / 2 )
+		.attr("y", canvasH - 100)
+		.attr("text-anchor", "middle")
+		.attr("font-family", "sans-serif")
+		.attr("font-size", "24px")
+		.attr("fill", "black")
+		.text("Total Amount of Meals")
+
+	const yText = svg.append("text")
+		.attr("x", -70)
+		.attr("y", -10)
+		.attr("text-anchor", "middle")
+		.attr("font-family", "sans-serif")
+		.attr("font-size", "24px") 
+		.attr("fill", "black")
+		.attr("transform", "translate(10," + (canvasH / 2) + ") rotate(90)")
+		.text("Days");
+		  
+   function handleMouseOver_Red(d, i) {
+
+    d3.select(this)
+      .transition()
+      .duration(300)
+      .attr("fill", d3.color("rgba(255,160,30,0.5)"))
+	  .attr("width", d => { return d.Times * 100 + 20; })
+      .attr("height", 70)
+  }
+  
+  function handleMouseOut_Red(d, i) {
+
+    d3.select(this).transition()
+      .duration("300")
+      .attr("fill", d3.color("rgba(255,10,0,0.3)"))
+      .attr("width", d => { return d.Times * 100; })
+      .attr("height", 58)
+  }
+  
+  function handleMouseOver_Blue(d, i) {
+
+    d3.select(this)
+      .transition()
+      .duration(300)
+      .attr("fill", d3.color("rgba(240,189,50,0.5)"))
+	  .attr("width", d => { return d.Times * 100 + 20; })
+      .attr("height", 70)
+  }
+  
+  function handleMouseOut_Blue(d, i) {
+
+    d3.select(this).transition()
+      .duration("300")
+      .attr("fill", d3.color("rgba(0,10,255,0.3)"))
+      .attr("width", d => { return d.Times * 100; })
+      .attr("height", 58)
+  }
+}
+
+
+	</script>
+	
+	<p>
+		
+		Blue = Meals
+		Red = Snacks
+		
+	</p>
+		
+</body>
+	
+</html>
