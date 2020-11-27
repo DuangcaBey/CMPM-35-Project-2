@@ -1,0 +1,15 @@
+id,Day,Type,Times,Total
+0,Mon,Meals,2,5
+0,Mon,Snacks,3,5
+1,Tues,Meals,2,7
+1,Tues,Snacks,5,7
+2,Wed,Meals,3,8
+2,Wed,Snacks,5,8
+3,Thur,Meals,2,3
+3,Thur,Snacks,1,3
+4,Fri,Meals,1,8
+4,Fri,Snacks,7,8
+5,Sat,Meals,1,10
+5,Sat,Snacks,9,10
+6,Sun,Meals,2,2
+6,Sun,Snacks,0,2
